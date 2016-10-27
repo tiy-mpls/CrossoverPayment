@@ -2,15 +2,15 @@
 
 HTML, CSS, and JS go in `resources/public`
 
-Can be run with the command `java -jar CrossoverPayment.jar` 
+Can be run with the command `java -jar CrossoverPayment.jar`
 Default port is 4567
 
 ##Product Info
-id - int
-name - String
-description - String
-price - BigDecimal
-imageName - String
+* id - int
+* name - String
+* description - String
+* price - BigDecimal
+* imageName - String
 
 ##Routes
 `/products` - GET - returns all product info in JSON
