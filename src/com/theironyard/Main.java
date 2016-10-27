@@ -12,8 +12,8 @@ import java.util.Scanner;
 
 public class Main {
 
-    private static ArrayList<Product> products = new ArrayList<>();
-    private static HashMap<Integer, Integer> cart = new HashMap<>();
+    protected static  ArrayList<Product> products = new ArrayList<>();
+    protected static HashMap<Integer, Integer> cart = new HashMap<>();
 
     private static final String NEWLINE = "\r\n";
 
@@ -43,44 +43,59 @@ public class Main {
 
         Spark.get("/get-product", ((request, response) -> {
             int id = Integer.parseInt(request.queryParams("id"));
-            Product product = null;
-            for(Product p : products) {
-                if(p.getId() == id) {
-                    product = p;
-                }
-            }
+            Product product = getProduct(id);
             JsonSerializer serializer = new JsonSerializer();
             return serializer.serialize(product);
         }));
 
         //POST routes
         Spark.post("/add-product", ((request, response) -> {
-
             int id = Integer.parseInt(request.queryParams("id"));
-            if(cart.containsKey(id)) {
-                cart.replace(id, cart.get(id) + 1);
-            } else {
-                cart.put(id, 1);
-            }
-
+            addProductToCart(id);
             return "";
         }));
 
         Spark.post("/remove-product", ((request, response) -> {
             int id = Integer.parseInt(request.queryParams("id"));
-            cart.remove(id);
+            removeProductFromCart(id);
             return "";
         }));
 
         Spark.post("/change-quantity", ((request, response) -> {
             int id = Integer.parseInt(request.queryParams("id"));
             int quantity = Integer.parseInt(request.queryParams("quantity"));
-            cart.replace(id, quantity);
+            changeProductQuantityInCart(id, quantity);
             return "";
         }));
     }
 
-    private static void loadProducts() {
+    protected static void changeProductQuantityInCart(int id, int quantity) {
+        cart.replace(id, quantity);
+    }
+
+    protected static void removeProductFromCart(int id) {
+        cart.remove(id);
+    }
+
+    protected static void addProductToCart(int id) {
+        if(cart.containsKey(id)) {
+            cart.replace(id, cart.get(id) + 1);
+        } else {
+            cart.put(id, 1);
+        }
+    }
+
+    protected static Product getProduct(int id) {
+        Product product = null;
+        for(Product p : products) {
+            if(p.getId() == id) {
+                product = p;
+            }
+        }
+        return product;
+    }
+
+    protected static void loadProducts() {
         File file = new File("products.csv");
         try {
             Scanner scanner = new Scanner(file);
