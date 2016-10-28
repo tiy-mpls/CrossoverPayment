@@ -26,7 +26,7 @@ Default port is 4567
 
 `/get-product` - GET - returns individual Product Info, needs `id` passed to it 
 
-`/tax` - GET - returns tax info, `zip` and `subtotal` passed to it, returns Tax Info in JSON
+`/tax` - GET - returns Tax Info in JSON, needs `zip` and `subtotal` passed to it
 
 
 `/add-product` - POST - adds a product to the cart, expects to recieve product ID as `id`
