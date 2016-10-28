@@ -1,11 +1,13 @@
 package com.theironyard;
 
+import jodd.json.JsonParser;
 import jodd.json.JsonSerializer;
 import spark.Spark;
 
-import java.io.File;
-import java.io.FileNotFoundException;
+import java.io.*;
 import java.math.BigDecimal;
+import java.net.URL;
+import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Scanner;
@@ -16,6 +18,8 @@ public class Main {
     protected static HashMap<Integer, Integer> cart = new HashMap<>();
 
     private static final String NEWLINE = "\r\n";
+
+    private static final String AVALARA_API_KEY = "Dw2thiPOXnnFliIbDP%2BlpJl%2F%2BReqHDLqdI9Ho9f0%2Fu580RTtGZKMVH8fTgiUmuKyTdPcqWsVXBUVYsxqyUO7xw%3D%3D";
 
     public static void main(String[] args) {
 
@@ -46,6 +50,18 @@ public class Main {
             Product product = getProduct(id);
             JsonSerializer serializer = new JsonSerializer();
             return serializer.serialize(product);
+        }));
+
+        Spark.get("/tax", ((request, response) -> {
+            String zipCode = request.queryParams("zip");
+            BigDecimal subTotal = new BigDecimal(request.queryParams("subtotal"));
+
+            TotalTaxRate totalTaxRate = getTaxInfo(zipCode);
+
+            FinalCost finalCost = new FinalCost(subTotal, zipCode, totalTaxRate.getTotalRate());
+
+            JsonSerializer serializer = new JsonSerializer();
+            return serializer.serialize(finalCost);
         }));
 
         //POST routes
@@ -93,6 +109,21 @@ public class Main {
             }
         }
         return product;
+    }
+
+    protected static TotalTaxRate getTaxInfo(String zipCode) throws IOException {
+        URL userInfoUrl = new URL(String.format("https://taxrates.api.avalara.com:443/postal?country=usa&postal=%s&apikey=%s", zipCode, AVALARA_API_KEY));
+        URLConnection uc = userInfoUrl.openConnection();
+        BufferedReader in = new BufferedReader(new InputStreamReader(uc.getInputStream()));
+        StringBuilder sb = new StringBuilder();
+        while(in.ready()) {
+            sb.append(in.readLine());
+        }
+
+        JsonParser parser = new JsonParser();
+        TotalTaxRate totalTaxRate = parser.parse(sb.toString(), TotalTaxRate.class);
+
+        return totalTaxRate;
     }
 
     protected static void loadProducts() {

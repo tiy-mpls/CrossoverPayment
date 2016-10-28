@@ -13,12 +13,20 @@ Default port is 4567
 * price - BigDecimal
 * imageName - String
 
+##Tax Info
+* rate - BigDecimal
+* total - BigDecimal
+* zip - String
+* subtotal - BigDecimal
+
 ##Routes
-`/products` - GET - returns all product info in JSON
+`/products` - GET - returns all Product Info in JSON
 
 `/get-cart` - GET - returns cart info as `id` and `quantity` in JSON
 
-`/get-product` - GET - returns individual product info, needs `id` passed to it 
+`/get-product` - GET - returns individual Product Info, needs `id` passed to it 
+
+`/tax` - GET - returns tax info, `zip` and `subtotal` passed to it, returns Tax Info in JSON
 
 
 `/add-product` - POST - adds a product to the cart, expects to recieve product ID as `id`

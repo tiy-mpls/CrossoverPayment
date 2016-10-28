@@ -2,6 +2,7 @@ package com.theironyard;
 
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.junit.runner.notification.RunListener;
 
 import java.math.BigDecimal;
 
@@ -69,6 +70,16 @@ public class MainTest {
     @Test
     public void loadProducts() throws Exception {
         assertTrue(Main.products.size() == 3);
+    }
+
+    @Test
+    public void getTaxInfo() throws Exception {
+        TotalTaxRate totalTaxRate = Main.getTaxInfo("55412");
+
+        assertTrue(totalTaxRate.getTotalRate().equals(new BigDecimal("7.775")));
+        assertTrue(totalTaxRate.getRates().size() == 4);
+        assertTrue(totalTaxRate.getRates().get(2).getType().equals("City"));
+
     }
 
 }
