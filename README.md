@@ -1,10 +1,16 @@
 # CrossoverPayment
 
-HTML, CSS, and JS go in `resources/public`
+## Prerequisites
+
+Make sure you have the Java SDK installed. If you are using homebrew then you can install it with `brew update && brew cask install java`.
+
+## Running the server
 
 Can be run with the command `java -jar CrossoverPayment.jar`
 
-Default port is 4567
+Default port is 4567. You can open http://localhost:4567 in the browser to view the site.
+
+HTML, CSS, and JS go in `resources/public`
 
 ##Product Info
 * id - int
@@ -19,7 +25,7 @@ Default port is 4567
 * zip - String
 * subtotal - BigDecimal
 
-##Routes
+## Backend Routes
 `/products` - GET - returns all Product Info in JSON
 
 `/get-cart` - GET - returns cart info as `id` and `quantity` in JSON
