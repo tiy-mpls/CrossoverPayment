@@ -14,7 +14,9 @@ import java.util.Scanner;
 
 public class Main {
 
-    protected static  ArrayList<Product> products = new ArrayList<>();
+    private static final String VERSION = "0.1.0.0";
+
+    protected static ArrayList<Product> products = new ArrayList<>();
     protected static HashMap<Integer, Integer> cart = new HashMap<>();
 
     private static final String NEWLINE = "\r\n";
@@ -29,30 +31,30 @@ public class Main {
 
         Spark.init();
 
-        Spark.get("/hello", ((request, response) -> {
+        Spark.get("/api/hello", ((request, response) -> {
             return "Hello World";
         }));
 
 
         //GET routes
-        Spark.get("/products", ((request, response) -> {
+        Spark.get("/api/products", ((request, response) -> {
             JsonSerializer serializer = new JsonSerializer();
             return serializer.deep(true).serialize(products);
         }));
 
-        Spark.get("/get-cart", ((request, response) -> {
+        Spark.get("/api/get-cart", ((request, response) -> {
             JsonSerializer serializer = new JsonSerializer();
             return serializer.deep(true).serialize(cart);
         }));
 
-        Spark.get("/get-product", ((request, response) -> {
+        Spark.get("/api/get-product", ((request, response) -> {
             int id = Integer.parseInt(request.queryParams("id"));
             Product product = getProduct(id);
             JsonSerializer serializer = new JsonSerializer();
             return serializer.serialize(product);
         }));
 
-        Spark.get("/tax", ((request, response) -> {
+        Spark.get("/api/tax", ((request, response) -> {
             String zipCode = request.queryParams("zip");
             BigDecimal subTotal = new BigDecimal(request.queryParams("subtotal"));
 
@@ -64,20 +66,22 @@ public class Main {
             return serializer.serialize(finalCost);
         }));
 
+        Spark.get("/api/version", ((request, response) -> VERSION));
+
         //POST routes
-        Spark.post("/add-product", ((request, response) -> {
+        Spark.post("/api/add-product", ((request, response) -> {
             int id = Integer.parseInt(request.queryParams("id"));
             addProductToCart(id);
             return "";
         }));
 
-        Spark.post("/remove-product", ((request, response) -> {
+        Spark.post("/api/remove-product", ((request, response) -> {
             int id = Integer.parseInt(request.queryParams("id"));
             removeProductFromCart(id);
             return "";
         }));
 
-        Spark.post("/change-quantity", ((request, response) -> {
+        Spark.post("/api/change-quantity", ((request, response) -> {
             int id = Integer.parseInt(request.queryParams("id"));
             int quantity = Integer.parseInt(request.queryParams("quantity"));
             changeProductQuantityInCart(id, quantity);
